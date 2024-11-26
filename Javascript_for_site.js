@@ -27,3 +27,24 @@ function timer(endTime = "2021-08-27T16:45:53.378") {
 }
 
 timer("2021-08-23T16:45:53.378")
+
+// Collapsible goal
+function toggleGoalDetails(event) {
+    // im gonna need to check and make sure this works with the html code/css code after other stuff is done
+    const summaryElement = event.target.closest('.goal-summary');
+    if (!summaryElement) return;
+
+    const detailsElement = summaryElement.nextElementSibling; // select the goal details
+    const arrowElement = summaryElement.querySelector('.arrow'); // select the arrow element
+
+    // Toggle visibility of the details
+    if (detailsElement.style.display === 'block') {
+        detailsElement.style.display = 'none'; // normally hide details
+    } else {
+        detailsElement.style.display = 'block'; // when clicked show details
+    }
+
+    // Toggle arrow rotation
+    arrowElement.classList.toggle('open'); // Rotate arrow using CSS needs more implementation
+}
+
