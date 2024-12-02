@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMART Goal Tracker</title>
+  <link rel="stylesheet" href="goalform.css">
+</head>
+<body>
+  <div class="container">
+    <h1>SMART Goal Tracker</h1>
+    <form id="goalForm">
+        <label>Title</label>
+        <input type="text" id="goalTitle" placeholder="Goal Title" required>
+        
+        <label>Specific</label>
+        <input id="goalSpecific" placeholder="Specific aspects of your goal" required>
+        
+        <label>Measurable</label>
+        <input id="goalMeasurable" placeholder="Measurable aspects of your goal" required>
+        
+        <label>Achievable</label>
+        <input id="goalAchievable" placeholder="Achievable aspects of your goal" required>
+        
+        <label>Relevant</label>
+        <input id="goalRelevant" placeholder="Relevant aspects of your goal" required>
+        
+        <label>Time-bound</label>
+        <input type="datetime-local" id="goalTimeBound" required>
+
+        <button type="submit">Save SMART Goal</button>
+
+    </form>
+    <div id="notificationContainer"></div>
+    <div id="goalList"></div>
+  </div>
+  <script src="goalform.css"></script>
+</body>
+</html>
