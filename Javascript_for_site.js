@@ -19,10 +19,16 @@ function timer(endTime = "2021-08-27T16:45:53.378") {
 
       console.log('Time left:' + days + "Days " + hours + "Hrs " + minutes + "Mins " + seconds + "secs")
 
+      // Call a function to remove the goal when timer hits zero
       if (timeLeft < 0) {
-        console.log('Times up');
+        document.getElementById(elementId).innerHTML = "Times up!";
         clearInterval(x);
+        remove_goal(elementId);
       }
+
+      // Update the DOM with the countdown
+      timerElement.innerHTML = `${days} Days ${hours} Hrs ${minutes} Mins ${seconds} Secs`;
+      
     }, 1000)                    // time refresh in ms
 }
 
