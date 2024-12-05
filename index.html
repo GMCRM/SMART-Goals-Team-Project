@@ -3,13 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SMART Goal Tracker</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- First CSS file -->
 </head>
 <body>
-    <form>
-        <label for="specific">Specific</label>
-        <input type="text" id="specific" name="specific" placeholder="specific">
-        <label for=""
-    </form>
+    <div class="container">
+        <h1>SMART Goal Tracker</h1>
+
+        <!-- Goal Form -->
+        <form id="goalForm">
+            <input type="text" id="goalTitle" placeholder="Goal Title" required>
+            <input type="text" id="goalSpecific" placeholder="Specific Details" required>
+            <input type="text" id="goalMeasurable" placeholder="Measurable Criteria" required>
+            <input type="text" id="goalAchievable" placeholder="Achievability" required>
+            <input type="text" id="goalRelevant" placeholder="Relevance" required>
+            <input type="datetime-local" id="goalTimeBound" required>
+            <button type="submit">Add Goal</button>
+        </form>
+
+        <!-- Timer -->
+        <div class="date-timer-container">
+            <div id="timer" class="timer"></div>
+        </div>
+
+        <!-- Goal List -->
+        <div id="goalList"></div>
+
+        <!-- Notification Container -->
+        <div id="notificationContainer"></div>
+    </div>
+
+    <!-- Include the JavaScript files -->
+    <script src="/script.js"></script> <!-- First JS file -->
 </body>
 </html>
