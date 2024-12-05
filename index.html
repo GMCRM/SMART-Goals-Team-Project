@@ -4,36 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMART Goal Tracker</title>
-    <link rel="stylesheet" href="./styles.css"> 
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>SMART Goal Tracker</h1>
 
-        <!-- Goal Form -->
-        <form id="goalForm">
-            <input type="text" id="goalTitle" placeholder="Goal Title" required>
-            <input type="text" id="goalSpecific" placeholder="Specific Details" required>
-            <input type="text" id="goalMeasurable" placeholder="Measurable Criteria" required>
-            <input type="text" id="goalAchievable" placeholder="Achievability" required>
-            <input type="text" id="goalRelevant" placeholder="Relevance" required>
-            <input type="datetime-local" id="goalTimeBound" required>
-            <button type="submit">Add Goal</button>
-        </form>
+        <button id="toggle-form-btn" class="add-goal-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add SMART Goal
+        </button>
 
-        <!-- Timer -->
-        <div class="date-timer-container">
-            <div id="timer" class="timer"></div>
+        <div id="goal-form-section" class="section card">
+            <div class="card-header">
+                <h2 id="form-title">Add a New SMART Goal</h2>
+            </div>
+            <div class="card-content">
+                <form id="goalForm">
+                    <div class="form-group">
+                        <label for="goalTitle">Title</label>
+                        <input type="text" id="goalTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalSpecific">Specific</label>
+                        <textarea id="goalSpecific" name="specific" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalMeasurable">Measurable</label>
+                        <textarea id="goalMeasurable" name="measurable" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalAchievable">Achievable</label>
+                        <textarea id="goalAchievable" name="achievable" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalRelevant">Relevant</label>
+                        <textarea id="goalRelevant" name="relevant" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalTimeBound">Time-Bound</label>
+                        <input type="datetime-local" id="goalTimeBound" name="timeBound" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" id="submit-btn" class="btn btn-primary">Add Goal</button>
+                        <button type="button" id="cancel-btn" class="btn btn-secondary" style="display:none;">Cancel Edit</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- Goal List -->
-        <div id="goalList"></div>
-
-        <!-- Notification Container -->
-        <div id="notificationContainer"></div>
+        <div class="section section-gap">
+            <h2>Your SMART Goals</h2>
+            <div id="goalList"></div>
+        </div>
     </div>
-
-
-    <script src="/script.js"></script> 
+    <script src="script.js"></script>
 </body>
 </html>

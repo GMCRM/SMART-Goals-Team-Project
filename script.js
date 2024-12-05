@@ -7,137 +7,198 @@ document.addEventListener("DOMContentLoaded", function () {
   const goalRelevantInput = document.getElementById("goalRelevant");
   const goalTimeBoundInput = document.getElementById("goalTimeBound");
   const goalList = document.getElementById("goalList");
-  const notificationContainer = document.getElementById("notificationContainer");
+  const submitBtn = document.getElementById("submit-btn");
+  const cancelBtn = document.getElementById("cancel-btn");
+  const toggleFormBtn = document.getElementById("toggle-form-btn");
+  const goalFormSection = document.getElementById("goal-form-section");
 
   let smartGoals = JSON.parse(localStorage.getItem("smartGoals")) || [];
-  smartGoals.forEach(displayGoal);
+  let editingGoalId = null;
 
-  goalTitleInput.focus();
+  function toggleForm() {
+    goalFormSection.classList.toggle('visible');
+    
+    const svgPlus = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Add SMART Goal
+    `;
+    
+    const svgClose = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+      Close Form
+    `;
+
+    toggleFormBtn.innerHTML = goalFormSection.classList.contains('visible') ? svgClose : svgPlus;
+  }
+
+  toggleFormBtn.addEventListener('click', toggleForm);
+
+  function resetForm() {
+    goalForm.reset();
+    editingGoalId = null;
+    submitBtn.textContent = "Add Goal";
+    cancelBtn.style.display = "none";
+    document.getElementById('form-title').textContent = "Add a New SMART Goal";
+  }
+
+  cancelBtn.addEventListener('click', () => {
+    resetForm();
+    toggleForm();
+  });
+
+  function startExpirationChecker() {
+    setInterval(() => {
+      const now = new Date();
+      const updatedGoals = smartGoals.filter(goal => new Date(goal.timeBound) > now);
+      
+      if (updatedGoals.length !== smartGoals.length) {
+        smartGoals = updatedGoals;
+        localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
+        renderGoals();
+      }
+    }, 60000);
+  }
+
+  function renderGoals() {
+    goalList.innerHTML = '';
+    
+    if (smartGoals.length === 0) {
+      goalList.innerHTML = `
+        <div class="card">
+          <div class="empty-state">
+            No goals yet. Add your first SMART goal!
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    smartGoals.forEach(goal => {
+      const goalItem = document.createElement("div");
+      goalItem.classList.add("goal-card", "card");
+      goalItem.innerHTML = `
+        <div class="goal-header" onclick="toggleGoalDetails(${goal.id})">
+          <div>
+            <div class="goal-title">${goal.title}</div>
+            <div class="goal-time">⏰ ${getRemainingTime(goal.timeBound)}</div>
+          </div>
+          <div class="goal-actions">
+            <button class="btn btn-edit" onclick="event.stopPropagation(); editGoal(${goal.id})">Edit</button>
+            <button class="btn btn-danger" onclick="event.stopPropagation(); deleteGoal(${goal.id})">Delete</button>
+          </div>
+        </div>
+        <div class="goal-details" id="goal-details-${goal.id}">
+          <div class="goal-detail-item">
+            <h4>Specific</h4>
+            <p>${goal.specific}</p>
+          </div>
+          <div class="goal-detail-item">
+            <h4>Measurable</h4>
+            <p>${goal.measurable}</p>
+          </div>
+          <div class="goal-detail-item">
+            <h4>Achievable</h4>
+            <p>${goal.achievable}</p>
+          </div>
+          <div class="goal-detail-item">
+            <h4>Relevant</h4>
+            <p>${goal.relevant}</p>
+          </div>
+          <div class="goal-detail-item">
+            <h4>Time-bound</h4>
+            <p>${new Date(goal.timeBound).toLocaleString()}</p>
+          </div>
+        </div>
+      `;
+      goalList.appendChild(goalItem);
+    });
+  }
+
+  function getRemainingTime(timebound) {
+    const remaining = new Date(timebound) - new Date();
+    if (remaining <= 0) return 'Expired';
+    
+    const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${days}d ${hours}h ${minutes}m remaining`;
+  }
+
+  window.toggleGoalDetails = function(goalId) {
+    const detailsElement = document.getElementById(`goal-details-${goalId}`);
+    detailsElement.classList.toggle('active');
+  }
+
+  window.editGoal = function(goalId) {
+    const goal = smartGoals.find(g => g.id === goalId);
+    if (!goal) return;
+
+    editingGoalId = goalId;
+    goalTitleInput.value = goal.title;
+    goalSpecificInput.value = goal.specific;
+    goalMeasurableInput.value = goal.measurable;
+    goalAchievableInput.value = goal.achievable;
+    goalRelevantInput.value = goal.relevant;
+    goalTimeBoundInput.value = goal.timeBound;
+
+    submitBtn.textContent = "Update Goal";
+    cancelBtn.style.display = "block";
+    document.getElementById('form-title').textContent = "Edit SMART Goal";
+
+    if (!goalFormSection.classList.contains('visible')) {
+      toggleForm();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.deleteGoal = function(goalId) {
+    if (confirm('Are you sure you want to delete this goal?')) {
+      smartGoals = smartGoals.filter(goal => goal.id !== goalId);
+      localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
+      renderGoals();
+    }
+  }
 
   goalForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    const goalTitle = goalTitleInput.value.trim();
-    const goalSpecific = goalSpecificInput.value.trim();
-    const goalMeasurable = goalMeasurableInput.value.trim();
-    const goalAchievable = goalAchievableInput.value.trim();
-    const goalRelevant = goalRelevantInput.value.trim();
-    const goalTimeBound = goalTimeBoundInput.value;
-
-    if (!goalTitle || !goalSpecific || !goalMeasurable || !goalAchievable || !goalRelevant || !goalTimeBound) {
-      showNotification("Error: Please fill in all fields.", "error");
-      return;
-    }
-
-    if (smartGoals.some((goal) => goal.title === goalTitle)) {
-      showNotification("Error: A goal with this title already exists.", "error");
-      return;
-    }
-
-    const newGoal = {
-      id: Date.now(),
-      title: goalTitle,
-      specific: goalSpecific,
-      measurable: goalMeasurable,
-      achievable: goalAchievable,
-      relevant: goalRelevant,
-      timeBound: goalTimeBound,
+    const goalData = {
+      id: editingGoalId || Date.now(),
+      title: goalTitleInput.value.trim(),
+      specific: goalSpecificInput.value.trim(),
+      measurable: goalMeasurableInput.value.trim(),
+      achievable: goalAchievableInput.value.trim(),
+      relevant: goalRelevantInput.value.trim(),
+      timeBound: goalTimeBoundInput.value
     };
 
-    smartGoals.push(newGoal);
-    localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
-    displayGoal(newGoal);
+    if (!goalData.title || !goalData.specific || !goalData.measurable || 
+        !goalData.achievable || !goalData.relevant || !goalData.timeBound) {
+      alert("Please fill in all fields.");
+      return;
+    }
 
-    showNotification("SMART Goal Saved!", "success");
-    goalForm.reset();
-    goalTitleInput.focus();
+    if (editingGoalId) {
+      smartGoals = smartGoals.map(goal => 
+        goal.id === editingGoalId ? goalData : goal
+      );
+    } else {
+      smartGoals.push(goalData);
+    }
+
+    localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
+    renderGoals();
+    resetForm();
+    toggleForm();
   });
 
-  function displayGoal(goal) {
-    const goalItem = document.createElement("div");
-    goalItem.classList.add("goal-item");
-
-    goalItem.innerHTML = `
-      <div class="goal-header">
-        <div class="goal-title">${goal.title}</div>
-        <div class="arrow"></div>
-      </div>
-      <div class="goal-details">
-        <div><strong>Specific:</strong> ${goal.specific}</div>
-        <div><strong>Measurable:</strong> ${goal.measurable}</div>
-        <div><strong>Achievable:</strong> ${goal.achievable}</div>
-        <div><strong>Relevant:</strong> ${goal.relevant}</div>
-        <div><strong>Time-Bound:</strong> ${goal.timeBound}</div>
-        <div class="goal-actions">
-          <button class="delete-button" data-id="${goal.id}">Delete</button>
-        </div>
-      </div>
-    `;
-
-    goalList.appendChild(goalItem);
-
-    const headerElement = goalItem.querySelector(".goal-header");
-    const detailsElement = goalItem.querySelector(".goal-details");
-    headerElement.addEventListener("click", () => {
-      detailsElement.classList.toggle("visible");
-      headerElement.classList.toggle("expanded");
-    });
-
-    const deleteButton = goalItem.querySelector(".delete-button");
-    deleteButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      deleteGoal(goal.id, goalItem);
-    });
-
-    const timerElement = document.createElement("div");
-    timerElement.classList.add("timer");
-    detailsElement.appendChild(timerElement);
-    timer(goal.timeBound, timerElement, goal.id);
-  }
-
-  function deleteGoal(id, goalElement) {
-    smartGoals = smartGoals.filter((goal) => goal.id !== id);
-    localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
-    goalElement.remove();
-    showNotification("SMART Goal Deleted!", "success");
-  }
-
-  function timer(endTime, timerElement, goalId) {
-    const second = 1000,
-      minute = second * 60,
-      hour = minute * 60,
-      day = hour * 24;
-
-    let end = new Date(endTime).getTime();
-    let x = setInterval(() => {
-      let now = new Date().getTime();
-      let timeLeft = end - now;
-
-      if (timeLeft < 0) {
-        timerElement.innerHTML = "Time's up!";
-        clearInterval(x);
-        deleteGoal(goalId, timerElement.closest(".goal-item"));
-        return;
-      }
-
-      let days = Math.floor(timeLeft / day),
-        hours = Math.floor((timeLeft % day) / hour),
-        minutes = Math.floor((timeLeft % hour) / minute),
-        seconds = Math.floor((timeLeft % minute) / second);
-
-      timerElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }, 1000);
-  }
-
-  function showNotification(message, type) {
-    const notification = document.createElement("div");
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-
-    notificationContainer.appendChild(notification);
-
-    setTimeout(() => {
-      notification.remove();
-    }, 3000);
-  }
+  startExpirationChecker();
+  renderGoals();
 });

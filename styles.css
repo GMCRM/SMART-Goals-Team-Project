@@ -1,3 +1,4 @@
+/* Base Styles */
 body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
@@ -5,6 +6,7 @@ body {
   padding: 0;
 }
 
+/* Container Styling */
 .container {
   max-width: 600px;
   margin: 20px auto;
@@ -14,33 +16,83 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Title */
 h1 {
   text-align: center;
   color: #333;
 }
 
+/* Enhanced Form Styling */
 form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
-form input, form button {
-  padding: 10px;
-  border-radius: 4px;
+.form-group {
+  display: flex;
+  flex-direction: column;
 }
 
-form button {
+.form-group label {
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: 600;
+}
+
+form input, form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+form input:focus, form textarea:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.btn {
+  cursor: pointer;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
   background-color: #4caf50;
   color: white;
-  cursor: pointer;
 }
 
-form button:hover {
+.btn-secondary {
+  background-color: #6b7280;
+  color: white;
+}
+
+.btn-primary:hover {
   background-color: #45a049;
 }
 
-.goal-item {
+.btn-secondary:hover {
+  background-color: #4b5563;
+}
+
+/* Goal List */
+#goalList {
+  margin-top: 20px;
+}
+
+.goal-card {
   background: #f1f1f1;
   border-radius: 4px;
   margin-bottom: 10px;
@@ -57,28 +109,78 @@ form button:hover {
   font-weight: bold;
 }
 
-.arrow {
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid black;
-  transition: transform 0.3s ease;
+.goal-actions {
+  display: flex;
+  gap: 5px;
 }
 
-.goal-header.expanded .arrow {
-  transform: rotate(180deg);
+.btn-edit {
+  background-color: #2196F3;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #f44336;
+  color: white;
 }
 
 .goal-details {
   display: none;
 }
 
-.goal-details.visible {
+.goal-details.active {
   display: block;
+  margin-top: 10px;
 }
 
-.timer {
-  color: red;
-  font-weight: bold;
+.goal-detail-item {
+  margin-bottom: 10px;
+}
+
+.goal-detail-item h4 {
+  margin: 0 0 5px 0;
+  color: #555;
+}
+
+.goal-time {
+  color: #666;
+  font-size: 0.8em;
+}
+
+/* Form Toggle */
+#goal-form-section {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+#goal-form-section.visible {
+  display: block;
+  opacity: 1;
+}
+
+.add-goal-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.add-goal-button svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #666;
+  padding: 20px;
 }
