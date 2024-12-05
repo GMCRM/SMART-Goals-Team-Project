@@ -1,1 +1,84 @@
-/* styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+form input, form button {
+  padding: 10px;
+  border-radius: 4px;
+}
+
+form button {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #45a049;
+}
+
+.goal-item {
+  background: #f1f1f1;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.goal-title {
+  font-weight: bold;
+}
+
+.arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid black;
+  transition: transform 0.3s ease;
+}
+
+.goal-header.expanded .arrow {
+  transform: rotate(180deg);
+}
+
+.goal-details {
+  display: none;
+}
+
+.goal-details.visible {
+  display: block;
+}
+
+.timer {
+  color: red;
+  font-weight: bold;
+}
