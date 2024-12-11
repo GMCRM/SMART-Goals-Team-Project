@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const cancelBtn = document.getElementById("cancel-btn");
   const toggleFormBtn = document.getElementById("toggle-form-btn");
   const goalFormSection = document.getElementById("goal-form-section");
+  
 
   let smartGoals = JSON.parse(localStorage.getItem("smartGoals")) || [];
   let editingGoalId = null;
@@ -52,18 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleForm();
   });
 
-  function startExpirationChecker() {
-    setInterval(() => {
-      const now = new Date();
-      const updatedGoals = smartGoals.filter(goal => new Date(goal.timeBound) > now);
-      
-      if (updatedGoals.length !== smartGoals.length) {
-        smartGoals = updatedGoals;
-        localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
-        renderGoals();
-      }
-    }, 60000);
-  }
+
 
   function renderGoals() {
     goalList.innerHTML = '';
