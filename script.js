@@ -53,7 +53,18 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleForm();
   });
 
-
+  function startExpirationChecker() {
+    setInterval(() => {
+      const now = new Date();
+      const updatedGoals = smartGoals.filter(goal => new Date(goal.timeBound) > now);
+      
+      if (updatedGoals.length !== smartGoals.length) {
+        smartGoals = updatedGoals;
+        localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
+        renderGoals();
+      }
+    }, 60000);
+  }
 
   function renderGoals() {
     goalList.innerHTML = '';
