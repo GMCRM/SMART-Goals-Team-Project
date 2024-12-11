@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const cancelBtn = document.getElementById("cancel-btn");
   const toggleFormBtn = document.getElementById("toggle-form-btn");
   const goalFormSection = document.getElementById("goal-form-section");
+  
 
   let smartGoals = JSON.parse(localStorage.getItem("smartGoals")) || [];
   let editingGoalId = null;
@@ -52,6 +53,19 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleForm();
   });
 
+  function startExpirationChecker() {
+    setInterval(() => {
+      const now = new Date();
+      const updatedGoals = smartGoals.filter(goal => new Date(goal.timeBound) > now);
+      
+      if (updatedGoals.length !== smartGoals.length) {
+        smartGoals = updatedGoals;
+        localStorage.setItem("smartGoals", JSON.stringify(smartGoals));
+        renderGoals();
+      }
+    }, 60000);
+  }
+
   function renderGoals() {
     goalList.innerHTML = '';
     
@@ -70,9 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const goalItem = document.createElement("div");
       goalItem.classList.add("goal-card", "card");
       goalItem.innerHTML = `
-        <div class="goal-header">
+        <div class="goal-header" onclick="toggleGoalDetails(${goal.id})">
           <div>
             <div class="goal-title">${goal.title}</div>
+            <div class="goal-time">⏰ ${getRemainingTime(goal.timeBound)}</div>
           </div>
           <div class="goal-actions">
             <button class="btn btn-edit" onclick="event.stopPropagation(); editGoal(${goal.id})">Edit</button>
@@ -102,20 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
       `;
-
-      // Create timer element and update it in real-time
-      const goalTimeDiv = document.createElement("div");
-      goalTimeDiv.classList.add("goal-time");
-      goalItem.querySelector(".goal-header div").appendChild(goalTimeDiv);
-
-      function updateRemainingTime() {
-        const remaining = getRemainingTime(goal.timeBound);
-        goalTimeDiv.textContent = `⏰ ${remaining}`;
-      }
-
-      updateRemainingTime(); // Set initial time
-      setInterval(updateRemainingTime, 1000); // Update every second
-
       goalList.appendChild(goalItem);
     });
   }
@@ -127,9 +128,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
     
-    return `${days}d ${hours}h ${minutes}m ${seconds}s remaining`;
+    return `${days}d ${hours}h ${minutes}m remaining`;
+  }
+
+  window.toggleGoalDetails = function(goalId) {
+    const detailsElement = document.getElementById(`goal-details-${goalId}`);
+    detailsElement.classList.toggle('active');
   }
 
   window.editGoal = function(goalId) {
@@ -195,5 +200,6 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleForm();
   });
 
+  startExpirationChecker();
   renderGoals();
 });
