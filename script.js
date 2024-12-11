@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    
+    if (minutes = 0) return  `${days}d ${hours}h  remaining`;
     return `${days}d ${hours}h ${minutes}m remaining`;
   }
 
